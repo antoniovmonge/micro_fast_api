@@ -7,13 +7,12 @@ services:
     volumes:
       - ./project:/usr/src/app
     ports:
-      - 8000:8000
+      - 8004:8000
     env_file:
       - .envs/.local/.fastapi
     depends_on:
       - web-db
 
-  # new
   web-db:
     build:
       context: ./project/db
@@ -22,3 +21,19 @@ services:
       - 5432
     env_file:
       - .envs/.local/.postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  admin:
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - .envs/.local/.pgadmin
+    ports:
+      - 8080:80
+    volumes:
+      - admin-data:/var/lib/pgadmin
+
+volumes:
+  db-data:
+  admin-data:
